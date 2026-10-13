@@ -1,0 +1,146 @@
+name: Landscape lighting transformer
+products:
+  - id: 8blya29yifohrkgm
+    manufacturer: Kichler
+    model: 15SCT300SS
+# LAN broadcast productKey for the same unit: keyc8nmwhvwps38x
+# Tuya category "pc" (power strip). Protocol 3.3.
+# DPs observed 2026-10-13:
+#   1-4   zone switches (transformer exposes 3 physical zones; DP 4 is present
+#         in the schema and is kept for completeness)
+#   9-12  per-zone countdown timers, seconds, 0-86400
+#   38    power-on behaviour: memory / on / off
+#   101-104 per-zone load: 0 when a zone is off, 6 on zones 1 and 2 when on
+#         (zone 3 had no load). Unit not confirmed (W or 0.1 A), so left
+#         unitless.
+#   105   status string, "ok" when healthy; fault values not yet observed
+entities:
+  - entity: switch
+    name: Zone 1
+    dps:
+      - id: 1
+        type: boolean
+        name: switch
+  - entity: switch
+    name: Zone 2
+    dps:
+      - id: 2
+        type: boolean
+        name: switch
+  - entity: switch
+    name: Zone 3
+    dps:
+      - id: 3
+        type: boolean
+        name: switch
+  - entity: switch
+    name: Zone 4
+    dps:
+      - id: 4
+        type: boolean
+        name: switch
+  - entity: time
+    category: config
+    translation_key: timer_x
+    translation_placeholders:
+      x: "1"
+    dps:
+      - id: 9
+        type: integer
+        name: second
+        range:
+          min: 0
+          max: 86400
+  - entity: time
+    category: config
+    translation_key: timer_x
+    translation_placeholders:
+      x: "2"
+    dps:
+      - id: 10
+        type: integer
+        name: second
+        range:
+          min: 0
+          max: 86400
+  - entity: time
+    category: config
+    translation_key: timer_x
+    translation_placeholders:
+      x: "3"
+    dps:
+      - id: 11
+        type: integer
+        name: second
+        range:
+          min: 0
+          max: 86400
+  - entity: time
+    category: config
+    translation_key: timer_x
+    translation_placeholders:
+      x: "4"
+    dps:
+      - id: 12
+        type: integer
+        name: second
+        range:
+          min: 0
+          max: 86400
+  - entity: select
+    category: config
+    translation_key: initial_state
+    dps:
+      - id: 38
+        type: string
+        name: option
+        mapping:
+          - dps_val: memory
+            value: memory
+          - dps_val: "on"
+            value: "on"
+          - dps_val: "off"
+            value: "off"
+  - entity: sensor
+    name: Zone 1 load
+    category: diagnostic
+    dps:
+      - id: 101
+        type: integer
+        name: sensor
+        class: measurement
+  - entity: sensor
+    name: Zone 2 load
+    category: diagnostic
+    dps:
+      - id: 102
+        type: integer
+        name: sensor
+        class: measurement
+  - entity: sensor
+    name: Zone 3 load
+    category: diagnostic
+    dps:
+      - id: 103
+        type: integer
+        name: sensor
+        class: measurement
+  - entity: sensor
+    name: Zone 4 load
+    category: diagnostic
+    dps:
+      - id: 104
+        type: integer
+        name: sensor
+        class: measurement
+  - entity: sensor
+    translation_key: status
+    class: enum
+    category: diagnostic
+    dps:
+      - id: 105
+        type: string
+        name: sensor
+        mapping:
+          - dps_val: ok
+            value: normal
